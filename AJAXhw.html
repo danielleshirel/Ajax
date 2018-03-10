@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bad Ass Women</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Bad Ass Women</h1>
+                <!-- Rendered Buttons will get Dumped Here  -->
+        <div id="buttons-view" data-person="topics"></div>
+        <br>
+        <form id="gif-form">
+            <label for="gif-input">Add a Bad Ass Woman</label>
+            <input type="text" id="gif-input">
+            <!-- Button triggers new gif to be added -->
+            <input id="add-gif" type="submit" value="submit">
+        </form>
+        <!-- Gif will Get Dumped Here -->
+        <div class="row">
+        <div id="gif-view"></div>
+       </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script type="text/javascript">
+        //Array of Bad Ass Women:
+        var topics = ["Ruth Bader Ginsburg", "Gal Gadot", "Beyonce", "Emma Watson", "Meryl Streep", "Laverne Cox"];
+
+        $("body").on("click", ".gif-btn", function() {
+            topics = $(this).attr("data-person");
+
+
+            var queryURL = "https://api.giphy.com/v1/gifs/search?q=" + topics + "&api_key=gHXcuP8Lgc4oQCeQsq1rpfHwjOpZAz8h";
+
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function(response) {
+
+            	var results = response.data;
+            	
+                for (var i = 0; i < results.length; i++) {
+
+                	var btnDiv = $("<div #buttons-view ></div");
+
+                    var gifDiv = $("<div #gif-view ></div>");
+
+                    var rating = results[i].rating;
+
+                    var p = $("<p>").text("Rating: " + rating);
+
+                    var personImage = $("<img>");
+
+
+                    personImage.attr("src", results[i].images.fixed_height.url);
+
+                    gifDiv.append(p);
+                    gifDiv.append(personImage);
+
+                    $("#buttons-view").prepend(btnDiv);
+                    $("#gif-view").prepend(gifDiv);
+
+                }
+            });
+
+        });
+
+        function renderButtons() {
+
+            $("#buttons-view").empty();
+
+
+            for (var i = 0; i < topics.length; i++) {
+
+
+                var a = $("<button>");
+
+                a.addClass("gif-btn");
+
+                a.attr("data-person", topics[i]);
+
+                a.text(topics[i]);
+
+                $("#buttons-view").append(a);
+            }
+        }
+
+
+        $("#add-gif").on("click", function(event) {
+            event.preventDefault();
+
+            var gif = $("#gif-input").val().trim();
+
+            topics.push(gif);
+
+            renderButtons();
+        });
+
+
+
+        $(document).ready(function() {
+            renderButtons();
+        });
+        </script>
+</body>
+
+</html>
